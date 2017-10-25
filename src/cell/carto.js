@@ -84,7 +84,7 @@ export class CartoVisualizer extends React.Component {
     var query = result.expandedQuery || view.query
 
     if (!this.state.css) {
-      this.setState({css: this.state.defaultPointCSS});
+      this.setState({'css': this.state.defaultPointCSS});
     }
 
     this.loadLibrary().then(() => {
@@ -113,7 +113,8 @@ export class CartoVisualizer extends React.Component {
           layer
             .addTo(map)
             .done(function(layer) {
-              self.state.layer = layer;
+              self.setState({'layer': layer});
+              self.cssCell.updateLayer(layer);
               self.zoomToLayer(layer, config);
             });
           addCell();
@@ -151,6 +152,7 @@ export class CartoVisualizer extends React.Component {
         <CartoCSSCell
           css={(!this.state.css) ? this.state.defaultPointCSS : this.state.css}
           layer={this.state.layer}
+          ref={(cssCell) => {this.cssCell = cssCell}}
         />
       </div>
     );
@@ -175,7 +177,11 @@ export class CartoCSSCell extends React.PureComponent {
   }
 
   componentWillReceiveProps(newProps) {
-    this.setState({layer: newProps.layer});
+    this.setState({'layer': newProps.layer});
+  }
+
+  updateLayer(layer) {
+    this.setState({'layer': layer});
   }
 
   render() {
@@ -215,8 +221,9 @@ export class CartoCSSCell extends React.PureComponent {
   }
 
   updateCartoCSS() {
-    if (this.state.layer && this.state.css) {
-      this.state.layer.setCartoCSS(this.state.css);
+    let layer = this.state.layer || this.props.layer;
+    if (layer && this.state.css) {
+      layer.setCartoCSS(this.state.css);
     }
   }
 
