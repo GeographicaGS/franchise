@@ -1,5 +1,10 @@
 import React from 'react'
 
+String.prototype.replaceAll = function(search, replacement) {
+  var target = this;
+  return target.replace(new RegExp(search, 'g'), replacement);
+};
+
 function addCSS(url){
   var link = document.createElement('link')
   link.type = 'text/css'
@@ -35,7 +40,15 @@ export class CartoVisualizer extends React.Component {
   }
 
   state = { loaded: false,
-            layer: undefined }
+            layer: undefined,
+            mapConfig: {
+              maxZoom: 18,
+              minZoom: 0,
+              center: [0, 0],
+              zoom: 0
+            },
+            fitBoundsMaxZoom: 12
+          }
 
   componentWillUpdate(props, state){
     let newQuery = props.result.expandedQuery || props.view.query;
@@ -51,15 +64,12 @@ export class CartoVisualizer extends React.Component {
 
     this.loadLibrary().then(() => {
         if (cartodb) {
-          var map = new cartodb.L.Map('mapContainer_' + view.id, {
-            center: [0,0],
-            zoom: 0
-          });
+          var map = new cartodb.L.Map('mapContainer_' + view.id, self.state.mapConfig);
 
           var baseLayer = cartodb.L.tileLayer("https://cartodb-basemaps-{s}.global.ssl.fastly.net/rastertiles/voyager/{z}/{x}/{y}.png", {
             subdomains: 'abcd',
-            maxZoom: 18,
-            minZoom: 0,
+            maxZoom: self.state.mapConfig.maxZoom,
+            minZoom: self.state.mapConfig.minZoom,
             label: 'Voyager'
           }).addTo(map);
 
@@ -75,13 +85,27 @@ export class CartoVisualizer extends React.Component {
             }
           });
 
-          layer.addTo(map) // add the layer to our map which already contains 1 sublayer
-          .done(function(layer) {
-            self.state.layer = layer;
-          });
+          layer
+            .addTo(map)
+            .done(function(layer) {
+              self.state.layer = layer;
+              self.zoomToLayer(layer, config);
+            });
       }
     }).catch(e => {
       console.log(e);
+    });
+  }
+
+  zoomToLayer(layer, config){
+    var self = this;
+    let sql = new cartodb.SQL({ user: config.credentials.user,
+                                api_key: config.credentials.apiKey
+                              });
+    sql.getBounds(
+      layer.getQuery().replaceAll('{{', '').replaceAll('}}', '')
+    ).done(function(bounds) {
+      layer.leafletMap.fitBounds(bounds, { maxZoom: self.state.fitBoundsMaxZoom });
     });
   }
 
