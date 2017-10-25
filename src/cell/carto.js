@@ -1,5 +1,9 @@
 import React from 'react'
 
+import { addCell } from '../notebook'
+
+import './carto.less'
+
 String.prototype.replaceAll = function(search, replacement) {
   var target = this;
   return target.replace(new RegExp(search, 'g'), replacement);
@@ -47,7 +51,18 @@ export class CartoVisualizer extends React.Component {
               center: [0, 0],
               zoom: 0
             },
-            fitBoundsMaxZoom: 12
+            fitBoundsMaxZoom: 12,
+            defaultPointCSS: ['#layer {',
+                                '    marker-width: 11;',
+                                '    marker-fill: #EE4D5A;',
+                                '    marker-fill-opacity: 0.9;',
+                                '    marker-line-color: #FFFFFF;',
+                                '    marker-line-width: 1;',
+                                '    marker-line-opacity: 1;',
+                                '    marker-placement: point;',
+                                '    marker-type: ellipse;',
+                                '    marker-allow-overlap: true;',
+                              '}'].join('\n')
           }
 
   shouldComponentUpdate(nextProps){
@@ -68,6 +83,10 @@ export class CartoVisualizer extends React.Component {
     var self = this;
     var query = result.expandedQuery || view.query
 
+    if (!this.state.css) {
+      this.setState({css: this.state.defaultPointCSS});
+    }
+
     this.loadLibrary().then(() => {
         if (cartodb) {
           var map = new cartodb.L.Map('mapContainer_' + view.id, self.state.mapConfig);
@@ -84,7 +103,7 @@ export class CartoVisualizer extends React.Component {
             type: 'cartodb',
             sublayers: [{
               sql: query,
-              cartocss: '#layer {  marker-width: 7;marker-fill: #EE4D5A;marker-fill-opacity: 0.9;marker-line-color: #FFFFFF;marker-line-width: 1;marker-line-opacity: 1;marker-placement: point;marker-type: ellipse;marker-allow-overlap: true;}'
+              cartocss: self.state.defaultPointCSS
             }],
             extra_params: {
              map_key: config.credentials.apiKey
@@ -97,6 +116,7 @@ export class CartoVisualizer extends React.Component {
               self.state.layer = layer;
               self.zoomToLayer(layer, config);
             });
+          addCell();
       }
     }).catch(e => {
       console.log(e);
@@ -126,9 +146,73 @@ export class CartoVisualizer extends React.Component {
     let { result, view } = this.props;
     let mapContainerId = "mapContainer_" + view.id;
     return (
-      <div className="carto-container" style={{width: 100 + '%'}}>
-        <div id={mapContainerId} style={{height: 100 + '%'}} />
+      <div className="carto-container">
+        <div className="map-container" id={mapContainerId} />
+        <CartoCSSCell
+          css={(!this.state.css) ? this.state.defaultPointCSS : this.state.css}
+          layer={this.state.layer}
+        />
       </div>
     );
   }
+}
+
+// import { Cell } from './index'
+import CodeMirror from 'codemirror'
+import { Intent, Tooltip } from "@blueprintjs/core";
+import 'codemirror/mode/javascript/javascript'
+import 'codemirror/mode/markdown/markdown'
+import 'codemirror/keymap/sublime'
+import 'codemirror/mode/css/css'
+import 'codemirror/theme/monokai.css'
+import ReactCodeMirror from '@skidding/react-codemirror'
+
+export class CartoCSSCell extends React.PureComponent {
+
+  state = {
+    css: undefined
+  }
+
+  render() {
+    const css_options = {
+      theme: 'monokai',
+      lineNumbers: true,
+      lineWrapping: true,
+      mode: "text/x-scss",
+      // highlightSelectionMatches: {
+      //     trim: true
+      // },
+      extraKeys: {
+          'Cmd-Enter': (cm) => this.updateCartoCSS(),
+          'Ctrl-Enter': (cm) => this.updateCartoCSS(),
+          "Ctrl-Space": "autocomplete"
+      },
+      // styleActiveLine: true,
+      autoCloseBrackets: true,
+      matchBrackets: true,
+      // addModeClass: true,
+      // keyMap: "sublime",
+      placeholder: 'Type CartoCSS here...',
+      showPredictions: false
+    }
+
+    return <div className='carto-css'>
+              <div className='input-wrap'>
+                <ReactCodeMirror
+                    value={(!this.props.css) ? '' : this.props.css}
+                    key='a'
+                    ref={e => this.cmr = e}
+                    onChange={css => { this.setState({'css': css})}}
+                    options={ css_options }
+                />
+              </div>
+          </div>
+  }
+
+  updateCartoCSS() {
+    if (this.props.layer && this.state.css) {
+      this.props.layer.setCartoCSS(this.state.css);
+    }
+  }
+
 }
