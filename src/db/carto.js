@@ -114,6 +114,7 @@ export async function run(query, cellId) {
   let result = await _runQuery(expandedQuery);
 
   result.query = query;
+  result.expandedQuery = expandedQuery;
 
   State.apply('connect', 'schema', U.replace(await getSchema()));
 
