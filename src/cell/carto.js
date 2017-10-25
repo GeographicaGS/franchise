@@ -50,10 +50,16 @@ export class CartoVisualizer extends React.Component {
             fitBoundsMaxZoom: 12
           }
 
+  shouldComponentUpdate(nextProps){
+    return nextProps.result.expandedQuery !== this.props.result.expandedQuery
+        || nextProps.view.query !== this.props.view.query
+  }
+
   componentWillUpdate(props, state){
     let newQuery = props.result.expandedQuery || props.view.query;
     if (state.layer && state.layer.getQuery() != newQuery) {
       state.layer.getSubLayer(0).setSQL(newQuery);
+      this.zoomToLayer(state.layer, this.props.config);
     }
   }
 
