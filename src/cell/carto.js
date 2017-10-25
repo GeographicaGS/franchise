@@ -101,7 +101,6 @@ export class CartoVisualizer extends React.Component {
           var layer = cartodb.createLayer(map, {
             user_name: config.credentials.user,
             type: 'cartodb',
-            https: true,
             sublayers: [{
               sql: query,
               cartocss: self.state.defaultPointCSS
@@ -109,7 +108,7 @@ export class CartoVisualizer extends React.Component {
             extra_params: {
              map_key: config.credentials.apiKey
             }
-          });
+          }, {https: true});
 
           layer
             .addTo(map)
