@@ -138,8 +138,8 @@ export class CartoVisualizer extends React.Component {
 
   loadLibrary(resolve, reject){
     return new Promise((resolve, reject) => {
-      addCSS('https://libs.cartocdn.com/cartodb.js/v3/3.15/themes/css/cartodb.css');
-      addJS('https://libs.cartocdn.com/cartodb.js/v3/3.15/cartodb.js', resolve, reject);
+      addCSS('https://cartodb-libs.global.ssl.fastly.net/cartodb.js/v3/3.15/themes/css/cartodb.css');
+      addJS('https://cartodb-libs.global.ssl.fastly.net/cartodb.js/v3/3.15/cartodb.js', resolve, reject);
     });
   }
 
