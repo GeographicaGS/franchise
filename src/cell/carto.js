@@ -137,8 +137,8 @@ export class CartoVisualizer extends React.Component {
 
   loadLibrary(resolve, reject){
     return new Promise((resolve, reject) => {
-      addCSS('http://libs.cartocdn.com/cartodb.js/v3/3.15/themes/css/cartodb.css');
-      addJS('http://libs.cartocdn.com/cartodb.js/v3/3.15/cartodb.js', resolve, reject);
+      addCSS('https://libs.cartocdn.com/cartodb.js/v3/3.15/themes/css/cartodb.css');
+      addJS('https://libs.cartocdn.com/cartodb.js/v3/3.15/cartodb.js', resolve, reject);
     });
   }
 
@@ -170,7 +170,12 @@ import ReactCodeMirror from '@skidding/react-codemirror'
 export class CartoCSSCell extends React.PureComponent {
 
   state = {
-    css: undefined
+    css: undefined,
+    layer: undefined
+  }
+
+  componentWillReceiveProps(newProps) {
+    this.setState({layer: newProps.layer});
   }
 
   render() {
@@ -210,8 +215,8 @@ export class CartoCSSCell extends React.PureComponent {
   }
 
   updateCartoCSS() {
-    if (this.props.layer && this.state.css) {
-      this.props.layer.setCartoCSS(this.state.css);
+    if (this.state.layer && this.state.css) {
+      this.state.layer.setCartoCSS(this.state.css);
     }
   }
 
