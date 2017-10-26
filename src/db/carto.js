@@ -139,7 +139,8 @@ async function _runQuery(query) {
   let result = {
     columns,
     values: values,
-    id: response.id
+    id: response.id,
+    time: response.time
   };
 
   result.astInput = query;
