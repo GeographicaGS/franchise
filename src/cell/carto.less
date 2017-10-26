@@ -13,32 +13,69 @@
         display: flex;
         flex-wrap: wrap-reverse;
         flex-direction: column;
+
+        .cartocss,
+        .carto-css .pt-popover-target,
+        .input-wrap,
+        .input-wrap .ReactCodeMirror {
+            width: 320px;
+        }
     }
 }
 
 .cm-s-monokai .CodeMirror-lines,
-.cm-s-monokai .stale.CodeMirror-focused.CodeMirror-lines {
-    background: #272822 !important;
+.cm-s-monokai .stale.CodeMirror-focused.CodeMirror-lines,
+.cm-s-monokai.CodeMirror {
+    background: #2B3C43 !important;
 }
 
 .carto-css {
-    margin-top: -600px;
-    width: 350px;
     height: 600px;
+
+    .input-wrap,
+    .ReactCodeMirror,
+    .CodeMirror-wrap {
+        height: 100% !important;
+    }
+
+    .fa {
+        margin-left: -3px;
+        color: #aaa;
+    }
+
+    .input-wrap,
+    .ReactCodeMirror,
+    .CodeMirror-wrap,
+    button {
+        z-index: 2;
+    }
+
+    button {
+        margin-left: -15px;
+        background: #f5f8fa;
+        border: none;
+    }
 }
 
 .carto-container {
     width: 100%;
+
+    .leaflet-left {
+        left: 340px;
+    }
 }
 
 .map-container {
     height: 100%;
 }
 
-.carto-css .pt-popover-target {
-    width: 350px;
+.carto-css .input-wrap {
+    transition: 1s;
+    left: 0;
+    height: 600px;
 }
 
-.input-wrap .ReactCodeMirror {
-    width: auto;
+.carto-css.hide .input-wrap {
+    transition: 1s;
+    left: -305px;
 }

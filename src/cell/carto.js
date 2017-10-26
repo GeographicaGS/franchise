@@ -1,4 +1,5 @@
 import React from 'react'
+import classNames from 'classnames'
 
 import './carto.less'
 
@@ -139,6 +140,7 @@ export class CartoVisualizer extends React.Component {
           layer
             .addTo(map)
             .done(function(layer) {
+              layer.leafletMap.zoomControl.setPosition('topright');
               self.addInfoWindow(map, layer.getSubLayer(0), view.result.columns);
               self.setState({'layer': layer});
               self.cssCell.updateLayer(layer);
@@ -182,12 +184,13 @@ export class CartoVisualizer extends React.Component {
     let mapContainerId = "mapContainer_" + view.id;
     return (
       <div className="carto-container">
-        <div className="map-container" id={mapContainerId} />
-        <CartoCSSCell
-          css={(!this.state.css) ? this.state.defaultCSS : this.state.css}
-          layer={this.state.layer}
-          ref={(cssCell) => {this.cssCell = cssCell}}
-        />
+        <div className="map-container" id={mapContainerId}>
+          <CartoCSSCell
+            css={(!this.state.css) ? this.state.defaultCSS : this.state.css}
+            layer={this.state.layer}
+            ref={(cssCell) => {this.cssCell = cssCell}}
+          />
+        </div>
       </div>
     );
   }
@@ -216,7 +219,8 @@ export class CartoCSSCell extends React.PureComponent {
 
   state = {
     css: undefined,
-    layer: undefined
+    layer: undefined,
+    shown: true
   }
 
   componentWillReceiveProps(newProps) {
@@ -227,10 +231,14 @@ export class CartoCSSCell extends React.PureComponent {
     this.setState({'layer': layer});
   }
 
+  toggle(e) {
+    this.setState({'shown': !this.state.shown});
+  }
+
   render() {
     const css_options = {
       theme: 'monokai',
-      lineNumbers: true,
+      lineNumbers: false,
       lineWrapping: true,
       mode: "text/x-scss",
       // highlightSelectionMatches: {
@@ -250,7 +258,12 @@ export class CartoCSSCell extends React.PureComponent {
       showPredictions: false
     }
 
-    return <div className='carto-css'>
+    let { shown } = this.state;
+
+    return <div className={ classNames({
+                  'carto-css' : true,
+                  'hide': !shown
+                }) }  >
               <div className='input-wrap'>
                 <Tooltip key={this.key} content={this.desc}>
                   <ReactCodeMirror
@@ -262,6 +275,17 @@ export class CartoCSSCell extends React.PureComponent {
                   >
                   </ReactCodeMirror>
                 </Tooltip>
+                <button type="button" onClick={e => this.toggle(e)}><i className={shown ? "fa fa-angle-double-left" : "fa fa-angle-double-right"} aria-hidden="true"></i></button>
+                <button class="u-lSpace--xl CDB-Button CDB-Button--loading CDB-Button--primary js-apply
+
+                ">
+                  <span class="CDB-Button-Text CDB-Text is-semibold CDB-Size-small">APPLY</span>
+                  <div class="CDB-Button-loader CDB-LoaderIcon is-white">
+                    <svg class="CDB-LoaderIcon-spinner" viewBox="0 0 50 50">
+                      <circle class="CDB-LoaderIcon-path" cx="25" cy="25" r="20" fill="none"></circle>
+                    </svg>
+                  </div>
+                </button>
               </div>
           </div>
   }
