@@ -52,6 +52,17 @@ export class CartoVisualizer extends React.Component {
               zoom: 0
             },
             fitBoundsMaxZoom: 12,
+            tooltip: ['<script type="infowindow/html" id="infowindow_template">',
+                        '<div class="cartodb-popup">',
+                            '<a href="#close" class="cartodb-popup-close-button close">x</a>',
+                            '<div class="cartodb-popup-content-wrapper">',
+                                '<div class="cartodb-popup-content">',
+                                    '{{cartodb_id}}',
+                                '</div>',
+                            '</div>',
+                            '<div class="cartodb-popup-tip-container"></div>',
+                        '</div>',
+                    '</script>'].join('\n'),
             defaultCSS: ['#layer[\'mapnik::geometry_type\'=1] {',
                         '    marker-width: 7;',
                         '    marker-fill: #EE4D5A;',
@@ -117,7 +128,11 @@ export class CartoVisualizer extends React.Component {
             sublayers: [{
               sql: query,
               cartocss: self.state.defaultCSS
+
             }],
+            infowindow: true,
+            tooltip: true,
+            legends: true,
             extra_params: {
              map_key: config.credentials.apiKey
             }
@@ -126,6 +141,7 @@ export class CartoVisualizer extends React.Component {
           layer
             .addTo(map)
             .done(function(layer) {
+              self.addInfoWindow(map, layer.getSubLayer(0), view.result.columns);
               self.setState({'layer': layer});
               self.cssCell.updateLayer(layer);
               self.zoomToLayer(layer, config);
@@ -135,6 +151,14 @@ export class CartoVisualizer extends React.Component {
     }).catch(e => {
       console.log(e);
     });
+  }
+
+  addInfoWindow(map, layer, columns){
+    cartodb.vis.Vis.addInfowindow(map, layer, this.filterColumns(columns));
+  }
+
+  filterColumns(columns){
+    return columns.filter(column => column.indexOf('the_geom') == -1);
   }
 
   zoomToLayer(layer, config){
