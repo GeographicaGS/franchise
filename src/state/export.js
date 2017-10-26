@@ -68,6 +68,7 @@ async function dumpApplicationState(withCredentials, includeDump){
         version: 2
     }
 
+
     if(withCredentials && includeDump && getDB().exportData){
         let db_data = await getDB().exportData();
         dump.databaseDump = db_data;
@@ -105,7 +106,7 @@ async function updateAutosave(){
 }
 
 async function makeURL(withCredentials, title){
-    let data = dumpApplicationState(withCredentials, true);
+    let data = await dumpApplicationState(withCredentials, true);
 
     var bin_data = JSON.stringify(JSON.stringify(data));
     var basename = location.protocol + '//' + location.host + location.pathname;
@@ -116,12 +117,12 @@ async function makeURL(withCredentials, title){
     ]))
 }
 
+
 async function downloadNotebook(withCredentials){
     let extension = 'html'
     let default_name = (new Date).toISOString().slice(0, 10) + (withCredentials ? '-Credentialed' : '');
 
     const a = document.createElement('a')
-    a.target = '_blank'
     a.style.position = 'absolute'
     a.style.top = '-10000px'
     a.style.left = '-10000px'
@@ -135,8 +136,9 @@ async function downloadNotebook(withCredentials){
             title: 'Export Notebook' + (withCredentials ? ' (with credentials)' : ''),
             inputPlaceholder: default_name
         }) || default_name)
-        a.download = title.match(/.+\..+/) ? title : title + '.' + extension
-        a.href = await makeURL(withCredentials, title)
+
+        a.setAttribute('download', title.match(/.+\..+/) ? title : title + '.' + extension)
+        a.setAttribute('href', await makeURL(withCredentials, title))
         a.click()      
 
         requestAnimationFrame(e => a.remove())
