@@ -1,7 +1,5 @@
 import React from 'react'
 
-import { addCell } from '../notebook'
-
 import './carto.less'
 
 String.prototype.replaceAll = function(search, replacement) {
@@ -195,17 +193,26 @@ export class CartoVisualizer extends React.Component {
   }
 }
 
-// import { Cell } from './index'
 import CodeMirror from 'codemirror'
-import { Intent, Tooltip } from "@blueprintjs/core";
 import 'codemirror/mode/javascript/javascript'
 import 'codemirror/mode/markdown/markdown'
 import 'codemirror/keymap/sublime'
 import 'codemirror/mode/css/css'
 import 'codemirror/theme/monokai.css'
 import ReactCodeMirror from '@skidding/react-codemirror'
+import { Tooltip as BlueprintTooltip, Position } from "@blueprintjs/core";
+
+function Tooltip(props){
+    return <BlueprintTooltip
+        position={Position.RIGHT}
+        tetherOptions={{constraints: [{ attachment: "together", to: "scrollParent" }]}}
+        {...props} />
+}
 
 export class CartoCSSCell extends React.PureComponent {
+
+  key = 'cartocss';
+  desc = 'Cmd+Enter to apply changes';
 
   state = {
     css: undefined,
@@ -245,13 +252,16 @@ export class CartoCSSCell extends React.PureComponent {
 
     return <div className='carto-css'>
               <div className='input-wrap'>
-                <ReactCodeMirror
-                    value={(!this.props.css) ? '' : this.props.css}
-                    key='a'
-                    ref={e => this.cmr = e}
-                    onChange={css => { this.setState({'css': css})}}
-                    options={ css_options }
-                />
+                <Tooltip key={this.key} content={this.desc}>
+                  <ReactCodeMirror
+                      value={(!this.props.css) ? '' : this.props.css}
+                      key='a'
+                      ref={e => this.cmr = e}
+                      onChange={css => { this.setState({'css': css})}}
+                      options={ css_options }
+                  >
+                  </ReactCodeMirror>
+                </Tooltip>
               </div>
           </div>
   }
