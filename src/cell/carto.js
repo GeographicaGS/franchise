@@ -146,7 +146,6 @@ export class CartoVisualizer extends React.Component {
               self.cssCell.updateLayer(layer);
               self.zoomToLayer(layer, config);
             });
-          addCell();
       }
     }).catch(e => {
       console.log(e);
