@@ -52,17 +52,30 @@ export class CartoVisualizer extends React.Component {
               zoom: 0
             },
             fitBoundsMaxZoom: 12,
-            defaultPointCSS: ['#layer {',
-                                '    marker-width: 11;',
-                                '    marker-fill: #EE4D5A;',
-                                '    marker-fill-opacity: 0.9;',
-                                '    marker-line-color: #FFFFFF;',
-                                '    marker-line-width: 1;',
-                                '    marker-line-opacity: 1;',
-                                '    marker-placement: point;',
-                                '    marker-type: ellipse;',
-                                '    marker-allow-overlap: true;',
-                              '}'].join('\n')
+            defaultCSS: ['#layer[\'mapnik::geometry_type\'=1] {',
+                        '    marker-width: 7;',
+                        '    marker-fill: #EE4D5A;',
+                        '    marker-fill-opacity: 0.9;',
+                        '    marker-line-color: #FFFFFF;',
+                        '    marker-line-width: 1;',
+                        '    marker-line-opacity: 1;',
+                        '    marker-type: ellipse;',
+                        '    marker-allow-overlap: true;',
+                        '}',
+                        '#layer[\'mapnik::geometry_type\'=2] {',
+                        '    line-color: #4CC8A3;',
+                        '    line-width: 1.5;',
+                        '    line-opacity: 1;',
+                        '}',
+                        '#layer[\'mapnik::geometry_type\'=3] {',
+                        '    polygon-fill: #826DBA;',
+                        '    polygon-opacity: 0.9;',
+                        '    ::outline {',
+                        '        line-color: #FFFFFF;',
+                        '        line-width: 1;',
+                        '        line-opacity: 0.5;',
+                        '    }',
+                        '}'].join('\n')
           }
 
   shouldComponentUpdate(nextProps){
@@ -84,7 +97,7 @@ export class CartoVisualizer extends React.Component {
     var query = result.expandedQuery || view.query
 
     if (!this.state.css) {
-      this.setState({'css': this.state.defaultPointCSS});
+      this.setState({'css': this.state.defaultCSS});
     }
 
     this.loadLibrary().then(() => {
@@ -103,7 +116,7 @@ export class CartoVisualizer extends React.Component {
             type: 'cartodb',
             sublayers: [{
               sql: query,
-              cartocss: self.state.defaultPointCSS
+              cartocss: self.state.defaultCSS
             }],
             extra_params: {
              map_key: config.credentials.apiKey
@@ -150,7 +163,7 @@ export class CartoVisualizer extends React.Component {
       <div className="carto-container">
         <div className="map-container" id={mapContainerId} />
         <CartoCSSCell
-          css={(!this.state.css) ? this.state.defaultPointCSS : this.state.css}
+          css={(!this.state.css) ? this.state.defaultCSS : this.state.css}
           layer={this.state.layer}
           ref={(cssCell) => {this.cssCell = cssCell}}
         />
