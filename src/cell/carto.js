@@ -276,16 +276,6 @@ export class CartoCSSCell extends React.PureComponent {
                   </ReactCodeMirror>
                 </Tooltip>
                 <button type="button" onClick={e => this.toggle(e)}><i className={shown ? "fa fa-angle-double-left" : "fa fa-angle-double-right"} aria-hidden="true"></i></button>
-                <button class="u-lSpace--xl CDB-Button CDB-Button--loading CDB-Button--primary js-apply
-
-                ">
-                  <span class="CDB-Button-Text CDB-Text is-semibold CDB-Size-small">APPLY</span>
-                  <div class="CDB-Button-loader CDB-LoaderIcon is-white">
-                    <svg class="CDB-LoaderIcon-spinner" viewBox="0 0 50 50">
-                      <circle class="CDB-LoaderIcon-path" cx="25" cy="25" r="20" fill="none"></circle>
-                    </svg>
-                  </div>
-                </button>
               </div>
           </div>
   }
