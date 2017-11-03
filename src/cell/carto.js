@@ -1,6 +1,8 @@
 import React from 'react'
 import classNames from 'classnames'
 
+import { updateCell } from './index'
+
 import './carto.less'
 
 String.prototype.replaceAll = function(search, replacement) {
@@ -32,14 +34,14 @@ export class CartoVisualizer extends React.Component {
   static key = 'carto';
   static desc = "CARTO View";
   static icon = <svg width="16px" height="16px" viewBox="762 -58 32 32" version="1.1" >
-      <g class="imago" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(762.000000, -58.000000)">
-        <circle class="Halo" fill="#ccc" opacity="0.4" cx="16" cy="16" r="16"></circle>
-        <circle class="point" fill="#ccc" cx="16" cy="16" r="5.5"></circle>
+      <g className="imago" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" transform="translate(762.000000, -58.000000)">
+        <circle className="Halo" fill="#ccc" opacity="0.4" cx="16" cy="16" r="16"></circle>
+        <circle className="point" fill="#ccc" cx="16" cy="16" r="5.5"></circle>
       </g>
     </svg>;
 
   static test(result){
-    return result.columns.some(k => ['the_geom'].includes(k.toLowerCase()))
+    return result.columns.some(k => ['the_geom_webmercator'].includes(k.toLowerCase()))
   }
 
   state = { loaded: false,
@@ -139,16 +141,19 @@ export class CartoVisualizer extends React.Component {
 
           layer
             .addTo(map)
-            .done(function(layer) {
+            .on('done', function(layer) {
+              layer.on('error', function(error) {
+                updateCell(view.id, { loading: false, result: null, error: error })
+              });
               layer.leafletMap.zoomControl.setPosition('topright');
               self.addInfoWindow(map, layer.getSubLayer(0), view.result.columns);
               self.setState({'layer': layer});
               self.cssCell.updateLayer(layer);
               self.zoomToLayer(layer, config);
               setTimeout(() => { layer.leafletMap.invalidateSize() }, 1000);
+            }).on('error', function(error) {
+              updateCell(view.id, { loading: false, result: null, error: error })
             });
-
-
       }
     }).catch(e => {
       console.log(e);
