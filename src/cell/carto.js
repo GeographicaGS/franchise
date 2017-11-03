@@ -145,7 +145,10 @@ export class CartoVisualizer extends React.Component {
               self.setState({'layer': layer});
               self.cssCell.updateLayer(layer);
               self.zoomToLayer(layer, config);
+              setTimeout(() => { layer.leafletMap.invalidateSize() }, 1000);
             });
+
+
       }
     }).catch(e => {
       console.log(e);
