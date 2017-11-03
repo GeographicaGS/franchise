@@ -12,8 +12,14 @@ export const name = 'CARTO'
 export const syntax = 'text/x-pgsql'
 
 import { connectHelper, expandQueryRefs, extractEditableColumns, assignSuggestedName } from './generic'
-export { getStagingValue, updateStagingValue, create_table_snippet, select_table_snippet } from './generic'
+export { getStagingValue, updateStagingValue, select_table_snippet } from './generic'
 
+export function create_table_snippet(){
+    return `DROP TABLE IF EXISTS new_table;
+CREATE TABLE new_table (id integer, name text);
+SELECT CDB_CartoDBFyTable('aromeu','new_table');
+INSERT INTO new_table (cartodb_id, the_geom, id, name) VALUES (1, st_geometryfromtext('POINT(0 0)', 4326), 1, 'WOW')`;
+}
 
 export class Configure extends React.Component {
   render() {
