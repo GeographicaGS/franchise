@@ -210,7 +210,7 @@ export function Clippy(props){
             <CV mode="text/x-pgsql" code={`SELECT cartodb_id,
        st_centroid(the_geom) AS the_geom,
        st_centroid(the_geom_webmercator) AS the_geom_webmercator
-FROM "builder-demo".world_commerce`}/>
+       FROM "builder-demo".world_commerce`}/>
             </section>
 
             <section>
@@ -235,7 +235,7 @@ FROM A`} />
    FROM cdb_isodistance('POINT(-3.70568 40.42028)'::geometry, 'walk', ARRAY[300, 600, 900]::integer[]))
 SELECT st_transform(the_geom, 3857) AS the_geom_webmercator,
        the_geom
-FROM isodistance`}/>
+       FROM isodistance`}/>
             </section>
 
             <section>
@@ -245,7 +245,7 @@ FROM isodistance`}/>
    FROM cdb_route_point_to_point('POINT(-3.70237112 40.41706163)'::geometry,'POINT(-3.69909883 40.41236875)'::geometry, 'car', ARRAY['mode_type=shortest']::text[]))
 SELECT st_transform(the_geom, 3857) AS the_geom_webmercator,
        the_geom
-FROM route`}/>
+       FROM route`}/>
             </section>
 
             <section>
@@ -254,6 +254,9 @@ FROM route`}/>
             <li><a target="_blank" href="https://www.postgresql.org/docs/9.4/static/sql.html">PostgreSQL Language Reference</a></li>
             <li><a target="_blank" href="https://postgis.net/docs/reference.html">PostGIS Reference</a></li>
             <li><a target="_blank" href="https://carto.com/docs/">CARTO Documentation</a></li>
+            <li><a target="_blank" href="https://carto.com/docs/carto-engine/sql-api/">CARTO SQL API</a></li>
+            <li><a target="_blank" href="https://carto.com/docs/carto-engine/dataservices-api/">CARTO Data Services API</a></li>
+            <li><a target="_blank" href="https://carto.com/docs/carto-engine/cartocss/">CARTOCSS Language Reference</a></li>
             </ul>
             </section>
 
