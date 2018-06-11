@@ -4,15 +4,15 @@
  _______  ______ _______ __   _ _______ _     _ _____ _______ _______
  |______ |_____/ |_____| | \  | |       |_____|   |   |______ |______
  |       |    \_ |     | |  \_| |_____  |     | __|__ ______| |______
-                                                                     
- _______  _____                                                      
- |______ |   __| |                                                   
- ______| |____\| |_____                                              
-                                                                     
- __   _  _____  _______ _______ ______   _____   _____  _     _      
- | \  | |     |    |    |______ |_____] |     | |     | |____/       
- |  \_| |_____|    |    |______ |_____] |_____| |_____| |    \_      
-                                                                     
+
+ _______  _____
+ |______ |   __| |
+ ______| |____\| |_____
+
+ __   _  _____  _______ _______ ______   _____   _____  _     _
+ | \  | |     |    |    |______ |_____] |     | |     | |____/
+ |  \_| |_____|    |    |______ |_____] |_____| |_____| |    \_
+
 -->
 <style>
 body {
@@ -94,7 +94,7 @@ const DATA = {{bin_data}};
 function sendData(target, src){
   console.log(src)
   if(typeof DATA != 'undefined'){
-    target.postMessage(DATA, '*')    
+    target.postMessage(DATA, '*')
   }
 }
 
@@ -114,4 +114,4 @@ setTimeout(function(){
 </script>
 
 <iframe src="http://localhost:3000/reciever.html" onload="sendData(this.contentWindow, this.src)"></iframe>
-<iframe src="https://franchise.cloud/app/reciever.html" onload="sendData(this.contentWindow, this.src)"></iframe>
+<iframe src="https://franchise.carto.io/app/reciever.html" onload="sendData(this.contentWindow, this.src)"></iframe>
