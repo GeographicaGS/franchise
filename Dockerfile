@@ -8,8 +8,6 @@ RUN npm install
 
 RUN npm run build --production
 
-RUN npm install -g serve
-
-CMD serve -s bundle
+CMD npm start
 
 EXPOSE 5000
