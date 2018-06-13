@@ -1,4 +1,3 @@
-# 
 FROM node:8.7.0
 
 ENV NPM_CONFIG_LOGLEVEL warn
@@ -9,6 +8,8 @@ RUN npm install
 
 RUN npm run build --production
 
-CMD npm start
+RUN npm install -g serve
+
+CMD serve -s bundle
 
 EXPOSE 5000
