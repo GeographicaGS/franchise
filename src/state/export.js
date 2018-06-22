@@ -31,7 +31,8 @@ function dumpCell(cell){
         loading: false,
         markdown: cell.markdown,
         selected: cell.selected,
-        css: cell.css
+        css: cell.css,
+        style: cell.style
     };
     if(cell.result){
         dump.result = {

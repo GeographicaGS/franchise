@@ -83,12 +83,12 @@ strokeColor: #FFFFFF`
         var self = this;
         var query = result.expandedQuery || view.query
 
-        if (view.css) {
-            this.state.css = view.css
+        if (view.style) {
+            this.state.style = view.style
         }
 
-        if (!this.state.css) {
-            this.setState({ 'css': this.state.defaultCSS });
+        if (!this.state.style) {
+            this.setState({ 'style': this.state.defaultCSS });
         }
 
         this.loadLibrary().then(() => {
@@ -111,7 +111,7 @@ strokeColor: #FFFFFF`
                 `);
 
 
-                const viz = new carto.Viz(self.createVariables(view.result.columns, self.state.css));
+                const viz = new carto.Viz(self.createVariables(view.result.columns, self.state.style));
 
                 const layer = new carto.Layer('layer-vl', source, viz);
 
@@ -132,7 +132,7 @@ strokeColor: #FFFFFF`
                 interactivity.on('featureHover', (event) => { self.addInfoWindow(event, map, layer, view.result.columns) });
 
                 layer.addTo(map, 'watername_ocean');
-                self.cssCell.updateCSS(self.state.css);
+                self.cssCell.updateCSS(self.state.style);
             }
         }).catch(e => {
             console.log(e);
@@ -222,8 +222,8 @@ strokeColor: #FFFFFF`
             </div>
           </div>
           <div className="cartodb-logo"><a href="http://www.carto.com" target="_blank"><img alt="CARTO" title="CARTO"></img></a></div>
-          <CartoCSSCell
-            css={(!this.state.css) ? this.state.defaultCSS : this.state.css}
+          <CartoVLStyleCell
+            style={(!this.state.style) ? this.state.defaultCSS : this.state.style}
             layer={this.state.layer}
             ref={(cssCell) => {this.cssCell = cssCell}}
             cellId={view.id}
@@ -251,28 +251,28 @@ function Tooltip(props){
         {...props} />
 }
 
-export class CartoCSSCell extends React.PureComponent {
+export class CartoVLStyleCell extends React.PureComponent {
 
-    key = 'cartocss';
+    key = 'cartovlstyle';
     desc = 'Cmd+Enter to apply changes';
 
     state = {
-        css: undefined,
+        style: undefined,
         layer: undefined,
         shown: true
     }
 
     componentWillReceiveProps(newProps) {
         this.setState({ 'layer': newProps.layer });
-        this.setState({ 'css': newProps.css });
+        this.setState({ 'style': newProps.style });
     }
 
     updateLayer(layer) {
         this.setState({ 'layer': layer });
     }
 
-    updateCSS(css) {
-        this.setState({'css': css});
+    updateCSS(style) {
+        this.setState({'style': style});
     }
 
     toggle(e) {
@@ -310,10 +310,10 @@ export class CartoCSSCell extends React.PureComponent {
                 <button type="button" onClick={e => this.toggle(e)}><i className={shown ? "fa fa-angle-double-down" : "fa fa-angle-double-up"} aria-hidden="true"></i></button>
                 <Tooltip key={this.key} content={this.desc}>
                   <ReactCodeMirror
-                      value={(!this.state.css) ? '' : this.state.css}
+                      value={(!this.state.style) ? '' : this.state.style}
                       key='a'
                       ref={e => this.cmr = e}
-                      onChange={css => { this.setState({'css': css})}}
+                      onChange={style => { this.setState({'style': style})}}
                       options={ css_options }
                   >
                   </ReactCodeMirror>
@@ -324,9 +324,9 @@ export class CartoCSSCell extends React.PureComponent {
 
     updateCartoCSS() {
         let layer = this.state.layer || this.props.layer;
-        if (layer && this.state.css) {
-            layer.blendToViz(new carto.Viz(this.state.css));
-            updateCell(this.props.cellId, { css: this.state.css })
+        if (layer && this.state.style) {
+            layer.blendToViz(new carto.Viz(this.state.style));
+            updateCell(this.props.cellId, { style: this.state.style })
         }
     }
 }
