@@ -111,13 +111,12 @@ strokeColor: #FFFFFF`
 
                 const layer = new carto.Layer('layer-vl', source, viz);
 
+                this.setState({ 'map': map });
+                this.setState({ 'layer': layer });
+
                 layer.on('loaded', () => {
-                    // layer.leafletMap.zoomControl.setPosition('topright');
-                    // self.addInfoWindow(map, layer.getSubLayer(0), view.result.columns);
-                    self.setState({ 'map': map });
-                    self.setState({ 'layer': layer });
                     self.setState({ 'viz': viz });
-                    // self.cssCell.updateLayer(layer);
+                    self.cssCell.updateLayer(layer);
                     self.zoomToLayer(map, config);
                 });
 
@@ -169,11 +168,11 @@ strokeColor: #FFFFFF`
 
     createVariables(columns, css) {
 
-        this.filterColumns(columns).forEach((c) => {
-            css = `
-                    @${c}: $${c}
-                    ${css}`
-        })
+        // this.filterColumns(columns).forEach((c) => {
+        //     css = `
+        //             @${c}: $${c}
+        //             ${css}`
+        // })
 
         return css;
     }
@@ -233,7 +232,7 @@ strokeColor: #FFFFFF`
         return new Promise((resolve, reject) => {
             addJS('https://libs.cartocdn.com/mapbox-gl/v0.45.0-carto1/mapbox-gl.js', () => {
                 addJS('https://cartodb-libs.global.ssl.fastly.net/cartodb.js/v3/3.15/cartodb.js', () => {
-                    addJS('http://libs.cartocdn.com/carto-vl/v0.5.0-beta/carto-vl.js', resolve, reject);
+                    addJS('https://libs.cartocdn.com/carto-vl/v0.5.0-beta/carto-vl.js', resolve, reject);
                 }, reject);
             }, reject);
         });
