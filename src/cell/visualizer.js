@@ -258,7 +258,7 @@ class SingleResultVisualizer extends React.Component {
 
 
 
-const Visualizers = [ExplainVisualizer, PivotVisualizer, TableVisualizer, CardVisualizer, LineChartVisualizer, BarChartVisualizer, Chart2DVisualizer, MapVisualizer, DownloadVisualizer, CartoVisualizer, CartoVLVisualizer]
+const Visualizers = [ExplainVisualizer, CartoVisualizer, CartoVLVisualizer]
 
 
 function NoVisualizer(){
