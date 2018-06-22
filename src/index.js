@@ -5,12 +5,19 @@ import App from './app'
 import _ from 'lodash'
 import './state/import.js'
 
-window.addEventListener("message", function(e){
-    sessionStorage.importData = e.data;
+window.addEventListener("message", function(e) {
     try {
-        window.top.location.replace(location.reload())
-    } catch (err) {
-        window.top.location = location.reload()
+        if (e && e.data && e.data.type != "webpackOk") {
+            JSON.parse(e.data);
+            sessionStorage.importData = e.data;
+            try {
+                window.top.location.replace(location.reload())
+            } catch (err) {
+                window.top.location = location.reload()
+            }
+        }
+    } catch (ignore) {
+
     }
 }, false);
 

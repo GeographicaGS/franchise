@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom'
 
 import _ from 'lodash';
 import { CartoVisualizer } from './carto'
+import { CartoVLVisualizer } from './cartovl'
 import { PivotVisualizer, TableVisualizer, CardVisualizer } from './table'
 import { LineChartVisualizer, BarChartVisualizer, Chart2DVisualizer } from './chart'
 import { Intent, Popover, Position, Switch, Tooltip as BlueprintTooltip } from "@blueprintjs/core";
@@ -257,7 +258,7 @@ class SingleResultVisualizer extends React.Component {
 
 
 
-const Visualizers = [ExplainVisualizer, PivotVisualizer, TableVisualizer, CardVisualizer, LineChartVisualizer, BarChartVisualizer, Chart2DVisualizer, MapVisualizer, DownloadVisualizer, CartoVisualizer]
+const Visualizers = [ExplainVisualizer, PivotVisualizer, TableVisualizer, CardVisualizer, LineChartVisualizer, BarChartVisualizer, Chart2DVisualizer, MapVisualizer, DownloadVisualizer, CartoVisualizer, CartoVLVisualizer]
 
 
 function NoVisualizer(){

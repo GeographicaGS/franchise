@@ -44,6 +44,7 @@ window.addEventListener("message", e => {
 }, false);
 
 export function importData(dump){
+    if (!dump) return;
     if(dump.version != 2) throw new Error('Incompatible format version');
     State.set(dump.state);
     if(dump.autoconnect){
@@ -63,7 +64,15 @@ if(State.get()){
     try {
         var data = JSON.parse(sessionStorage.importData);
         delete sessionStorage.importData;
-    } catch (err) { console.error(err) }
+    } catch (err) {
+        console.error(err);
+        delete sessionStorage.importData;
+        try {
+            window.top.location.replace(location.reload())
+        } catch (err) {
+            window.top.location = location.reload()
+        }
+    }
     importData(data)
 }else if(sessionStorage.autosave){
     try {
@@ -90,7 +99,7 @@ if(State.get()){
                 onClick: () => importData(data),
                 text: "Restore"
             }
-        })    
+        })
     }
     restoreDefault()
 }else{
