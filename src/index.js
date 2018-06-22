@@ -5,6 +5,14 @@ import App from './app'
 import _ from 'lodash'
 import './state/import.js'
 
+window.addEventListener("message", function(e){
+    sessionStorage.importData = e.data;
+    try {
+        window.top.location.replace(location.reload())
+    } catch (err) {
+        window.top.location = location.reload()
+    }
+}, false);
 
 window.STATE = State;
 
