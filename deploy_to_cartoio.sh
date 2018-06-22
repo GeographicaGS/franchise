@@ -7,6 +7,7 @@ BRANCH_NAME="add_cartodbjs_support"
 
 git remote remove dokku
 git remote add dokku dokku@carto.io:$APP_NAME
+git push origin $BRANCH_NAME
 ssh dokku@carto.io apps:destroy $APP_NAME
 git push dokku $BRANCH_NAME:master
 ssh dokku@carto.io certs:add $APP_NAME /home/dokku/tls/server.crt /home/dokku/tls/server.key
