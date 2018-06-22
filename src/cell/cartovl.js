@@ -280,11 +280,7 @@ export class CartoCSSCell extends React.PureComponent {
     }
 
     shouldComponentUpdate(nextProps) {
-        return nextProps.css !== this.props.css
-    }
-
-    componentDidMount() {
-        this.setState({'css': this.props.css})
+        return true;
     }
 
     render() {
