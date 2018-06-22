@@ -83,6 +83,10 @@ strokeColor: #FFFFFF`
         var self = this;
         var query = result.expandedQuery || view.query
 
+        if (view.css) {
+            this.state.css = view.css
+        }
+
         if (!this.state.css) {
             this.setState({ 'css': this.state.defaultCSS });
         }
@@ -107,7 +111,7 @@ strokeColor: #FFFFFF`
                 `);
 
 
-                const viz = new carto.Viz(self.createVariables(view.result.columns, self.state.defaultCSS));
+                const viz = new carto.Viz(self.createVariables(view.result.columns, self.state.css));
 
                 const layer = new carto.Layer('layer-vl', source, viz);
 
@@ -128,38 +132,7 @@ strokeColor: #FFFFFF`
                 interactivity.on('featureHover', (event) => { self.addInfoWindow(event, map, layer, view.result.columns) });
 
                 layer.addTo(map, 'watername_ocean');
-
-
-                // var layer = cartodb.createLayer(map, {
-                //     user_name: config.credentials.user,
-                //     type: 'cartodb',
-                //     sublayers: [{
-                //         sql: query,
-                //         cartocss: self.state.defaultCSS
-                //     }],
-                //     infowindow: true,
-                //     tooltip: true,
-                //     legends: true,
-                //     extra_params: {
-                //         map_key: config.credentials.apiKey
-                //     }
-                // }, { https: true });
-
-                // layer
-                //     .addTo(map)
-                //     .on('done', function(layer) {
-                //         layer.on('error', function(error) {
-                //             updateCell(view.id, { loading: false, result: null, error: error })
-                //         });
-                //         layer.leafletMap.zoomControl.setPosition('topright');
-                //         self.addInfoWindow(map, layer.getSubLayer(0), view.result.columns);
-                //         self.setState({ 'layer': layer });
-                //         self.cssCell.updateLayer(layer);
-                //         self.zoomToLayer(layer, config);
-                //         setTimeout(() => { layer.leafletMap.invalidateSize() }, 1000);
-                //     }).on('error', function(error) {
-                //         updateCell(view.id, { loading: false, result: null, error: error })
-                //     });
+                self.cssCell.updateCSS(self.state.css);
             }
         }).catch(e => {
             console.log(e);
@@ -253,6 +226,7 @@ strokeColor: #FFFFFF`
             css={(!this.state.css) ? this.state.defaultCSS : this.state.css}
             layer={this.state.layer}
             ref={(cssCell) => {this.cssCell = cssCell}}
+            cellId={view.id}
           />
         </div>
 
@@ -290,14 +264,27 @@ export class CartoCSSCell extends React.PureComponent {
 
     componentWillReceiveProps(newProps) {
         this.setState({ 'layer': newProps.layer });
+        this.setState({ 'css': newProps.css });
     }
 
     updateLayer(layer) {
         this.setState({ 'layer': layer });
     }
 
+    updateCSS(css) {
+        this.setState({'css': css});
+    }
+
     toggle(e) {
         this.setState({ 'shown': !this.state.shown });
+    }
+
+    shouldComponentUpdate(nextProps) {
+        return nextProps.css !== this.props.css
+    }
+
+    componentDidMount() {
+        this.setState({'css': this.props.css})
     }
 
     render() {
@@ -327,7 +314,7 @@ export class CartoCSSCell extends React.PureComponent {
                 <button type="button" onClick={e => this.toggle(e)}><i className={shown ? "fa fa-angle-double-down" : "fa fa-angle-double-up"} aria-hidden="true"></i></button>
                 <Tooltip key={this.key} content={this.desc}>
                   <ReactCodeMirror
-                      value={(!this.props.css) ? '' : this.props.css}
+                      value={(!this.state.css) ? '' : this.state.css}
                       key='a'
                       ref={e => this.cmr = e}
                       onChange={css => { this.setState({'css': css})}}
@@ -343,6 +330,7 @@ export class CartoCSSCell extends React.PureComponent {
         let layer = this.state.layer || this.props.layer;
         if (layer && this.state.css) {
             layer.blendToViz(new carto.Viz(this.state.css));
+            updateCell(this.props.cellId, { css: this.state.css })
         }
     }
 }

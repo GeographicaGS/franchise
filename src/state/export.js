@@ -30,7 +30,8 @@ function dumpCell(cell){
         suggestedName: cell.suggestedName,
         loading: false,
         markdown: cell.markdown,
-        selected: cell.selected
+        selected: cell.selected,
+        css: cell.css
     };
     if(cell.result){
         dump.result = {
@@ -139,7 +140,7 @@ async function downloadNotebook(withCredentials){
 
         a.setAttribute('download', title.match(/.+\..+/) ? title : title + '.' + extension)
         a.setAttribute('href', await makeURL(withCredentials, title))
-        a.click()      
+        a.click()
 
         requestAnimationFrame(e => a.remove())
     } catch (e) {

@@ -110,6 +110,10 @@ export class CartoVisualizer extends React.Component {
         var self = this;
         var query = result.expandedQuery || view.query
 
+        if (view.css) {
+            this.state.css = view.css
+        }
+
         if (!this.state.css) {
             this.setState({ 'css': this.state.defaultCSS });
         }
@@ -130,7 +134,7 @@ export class CartoVisualizer extends React.Component {
                     type: 'cartodb',
                     sublayers: [{
                         sql: query,
-                        cartocss: self.state.defaultCSS
+                        cartocss: self.state.css
                     }],
                     infowindow: true,
                     tooltip: true,
@@ -155,6 +159,7 @@ export class CartoVisualizer extends React.Component {
                     }).on('error', function(error) {
                         updateCell(view.id, { loading: false, result: null, error: error })
                     });
+                self.cssCell.updateCSS(self.state.css);
             }
         }).catch(e => {
             console.log(e);
@@ -199,6 +204,7 @@ export class CartoVisualizer extends React.Component {
             css={(!this.state.css) ? this.state.defaultCSS : this.state.css}
             layer={this.state.layer}
             ref={(cssCell) => {this.cssCell = cssCell}}
+            cellId={view.id}
           />
         </div>
       </div>
@@ -241,8 +247,20 @@ export class CartoCSSCell extends React.PureComponent {
         this.setState({ 'layer': layer });
     }
 
+    updateCSS(css) {
+        this.setState({'css': css});
+    }
+
     toggle(e) {
         this.setState({ 'shown': !this.state.shown });
+    }
+
+    shouldComponentUpdate(nextProps) {
+        return nextProps.css !== this.props.css
+    }
+
+    componentDidMount() {
+        this.setState({'css': this.props.css})
     }
 
     render() {
@@ -288,6 +306,7 @@ export class CartoCSSCell extends React.PureComponent {
         let layer = this.state.layer || this.props.layer;
         if (layer && this.state.css) {
             layer.setCartoCSS(this.state.css);
+            updateCell(this.props.cellId, { css: this.state.css })
         }
     }
 }

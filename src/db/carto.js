@@ -89,6 +89,10 @@ export function disconnectDB() {
 }
 
 export async function sendRequest(query) {
+  if (query.toLowerCase().indexOf('limit') == -1) {
+    query += ' limit 1';
+  }
+
   let response = await fetch('https://' + State.get('config', 'carto', 'credentials', 'user') + '.' + State.get('config', 'carto', 'credentials', 'host') + '/api/v1/sql?q=' + query + '&api_key=' + State.get('config', 'carto', 'credentials', 'apiKey') || 'default_public');
 
   return await response.json();
@@ -264,6 +268,7 @@ SELECT st_transform(the_geom, 3857) AS the_geom_webmercator,
             <li><a target="_blank" href="https://carto.com/docs/carto-engine/sql-api/">CARTO SQL API</a></li>
             <li><a target="_blank" href="https://carto.com/docs/carto-engine/dataservices-api/">CARTO Data Services API</a></li>
             <li><a target="_blank" href="https://carto.com/docs/carto-engine/cartocss/">CARTOCSS Language Reference</a></li>
+            <li><a target="_blank" href="https://carto.com/developers/carto-vl/">CARTO VL</a></li>
             </ul>
             </section>
 
