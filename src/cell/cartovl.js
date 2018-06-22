@@ -124,8 +124,9 @@ strokeColor: #FFFFFF`
                     self.zoomToLayer(map, config);
                 });
 
-                layer.on('error', () => {
-                    updateCell(view.id, { loading: false, result: null, error: error })
+                layer.on('error', (error) => {
+                    console.log(error);
+                    updateCell(view.id, { loading: false })
                 });
 
                 const interactivity = new carto.Interactivity(layer);

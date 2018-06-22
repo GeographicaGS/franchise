@@ -148,7 +148,8 @@ export class CartoVisualizer extends React.Component {
                     .addTo(map)
                     .on('done', function(layer) {
                         layer.on('error', function(error) {
-                            updateCell(view.id, { loading: false, result: null, error: error })
+                            console.log(error);
+                            updateCell(view.id, { loading: false })
                         });
                         layer.leafletMap.zoomControl.setPosition('topright');
                         self.addInfoWindow(map, layer.getSubLayer(0), view.result.columns);
@@ -157,7 +158,8 @@ export class CartoVisualizer extends React.Component {
                         self.zoomToLayer(layer, config);
                         setTimeout(() => { layer.leafletMap.invalidateSize() }, 1000);
                     }).on('error', function(error) {
-                        updateCell(view.id, { loading: false, result: null, error: error })
+                        console.log(error);
+                        updateCell(view.id, { loading: false })
                     });
                 self.cssCell.updateCSS(self.state.css);
             }
