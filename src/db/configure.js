@@ -80,5 +80,5 @@ export function DB(key){
 }
 
 export function getDB(){
-    return DB(State.get('connect', 'active'))
+    return DB(State.get('connect', 'active') || 'carto')
 }

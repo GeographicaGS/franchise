@@ -15,7 +15,7 @@ function restoreDefault(){
             // credentials: credentials
         },
         connect: {
-            active: localStorage.activeConnector || 'sqlite',
+            active: 'carto',
             status: 'unconfigured',
         },
         trash: {
