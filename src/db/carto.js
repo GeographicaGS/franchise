@@ -89,7 +89,18 @@ export function disconnectDB() {
 }
 
 export async function sendRequest(query) {
-  let response = await fetch('https://' + State.get('config', 'carto', 'credentials', 'user') + '.' + State.get('config', 'carto', 'credentials', 'host') + '/api/v1/sql?q=' + encodeURIComponent(query) + '&api_key=' + State.get('config', 'carto', 'credentials', 'apiKey'));
+  let sql_api_url;
+  const opts = {
+    'host': State.get('config', 'carto', 'credentials', 'host'),
+    'user': State.get('config', 'carto', 'credentials', 'user'),
+    'apiKey': State.get('config', 'carto', 'credentials', 'apiKey')
+  }
+  if (opts.host.indexOf('carto.com') > -1) {
+    sql_api_url = `https://${opts.user}.${opts.host}/api/v2/sql?q=${query}&api_key=${opts.apiKey}`
+  } else {
+    sql_api_url = `https://${opts.host}/user/${opts.user}/api/v2/sql?q=${query}&api_key=${opts.apiKey}`
+  }
+  let response = await fetch(sql_api_url);
 
   return await response.json();
 }

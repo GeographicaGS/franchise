@@ -124,7 +124,7 @@ export class CartoVisualizer extends React.Component {
                     label: 'Voyager'
                 }).addTo(map);
 
-                var layer = cartodb.createLayer(map, {
+                let layer_opts = {
                     user_name: config.credentials.user,
                     type: 'cartodb',
                     sublayers: [{
@@ -137,7 +137,14 @@ export class CartoVisualizer extends React.Component {
                     extra_params: {
                         map_key: config.credentials.apiKey
                     }
-                }, { https: true });
+                }
+
+                if (config.credentials.host.indexOf('carto.com') === -1) {
+                    layer_opts['sql_api_template'] = `https://${config.credentials.host}/user/{user}`;
+                    layer_opts['maps_api_template'] = `https://${config.credentials.host}/user/{user}`
+                }
+
+                var layer = cartodb.createLayer(map, layer_opts, { https: true });
 
                 layer
                     .addTo(map)
@@ -170,10 +177,18 @@ export class CartoVisualizer extends React.Component {
 
     zoomToLayer(layer, config) {
         var self = this;
-        let sql = new cartodb.SQL({
+        let sql_opts = {
             user: config.credentials.user,
             api_key: config.credentials.apiKey
-        });
+        };
+
+        if(config.credentials.host.indexOf('carto.com') === -1) {
+            sql_opts['sql_api_template'] = `https://${config.credentials.host}/user/{user}`
+            sql_opts['maps_api_template'] = `https://${config.credentials.host}/user/{user}`
+        }
+
+        let sql = new cartodb.SQL(sql_opts);
+
         sql.getBounds(
             layer.getQuery().replaceAll('{{', '').replaceAll('}}', '')
         ).done(function(bounds) {
