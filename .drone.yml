@@ -1,0 +1,29 @@
+
+kind: pipeline
+name: run
+
+steps:
+  - name: install_and_build
+    image: node:8-slim
+    commands:
+      - apt-get update && apt-get install -y git bzip2
+      - yarn install
+      - yarn build
+      - ls -alh bundle/
+
+  - name: list_build
+    image: debian:slim
+    commands:
+      - ls -alh bundle/
+  - name: upload
+    image: plugins/gcs
+    settings:
+      source: bundle/
+      target: gs://franchise.geographica.com
+      token:
+        from_secret: google-token
+    # when:
+    #   branch:
+    #     - master
+    #   event:
+    #     - push
