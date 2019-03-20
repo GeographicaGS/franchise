@@ -17,7 +17,8 @@ steps:
       - yarn install
       # - df -h
       - chmod +x ./node_modules/.bin/nwb
-      - ./node_modules/.bin/nwb --version
+      - $PWD/node_modules/.bin/nwb --version
+      - PATH=$PATH:$PWD/node_modules/.bin ./node_modules/.bin/nwb --version
       - yarn nwb-version
       - yarn test
       - exit 1
