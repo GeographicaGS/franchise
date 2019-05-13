@@ -195,7 +195,7 @@ export function escapeIdentifier(id, config){
 
 function preProcess(query) {
   if (query) {
-    return query.replace(/(?:\r\n|\r|\n)/g, ' ');
+    return encodeURI(query).replace(/%20/g, '+');
   }
 }
 

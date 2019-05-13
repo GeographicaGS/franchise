@@ -2,13 +2,15 @@ FROM node:8.7.0
 
 ENV NPM_CONFIG_LOGLEVEL warn
 
-COPY . .
+RUN npm install -g serve
+
+COPY package.json .
 
 RUN npm install
 
-RUN npm run build --production
+COPY . .
 
-RUN npm install -g serve
+RUN npm run build --production
 
 COPY ./reciever.html bundle/
 
